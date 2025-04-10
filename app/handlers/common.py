@@ -1,5 +1,5 @@
 from aiogram import Router
-from aiogram.filters import Command
+from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
 
 from app.services.user_service import UserService
@@ -8,7 +8,7 @@ from app.utils.logger import logger
 router = Router()
 
 
-@router.message(Command("start"))
+@router.message(CommandStart())
 async def start_handler(
         message: Message,
         user_service: UserService,
