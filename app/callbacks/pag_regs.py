@@ -23,18 +23,22 @@ async def get_regions(
         state: FSMContext,
         place_service: PlaceService,
 ):
-    place_id = int(callback.data.split(":")[-1])
+    try:
+        await callback.answer()
+        place_id = int(callback.data.split(":")[-1])
 
-    place_info = await place_service.get_one_place(place_id)
+        place_info = await place_service.get_one_place(place_id)
 
-    await callback.message.answer(
-        text=f"{place_info.title}\n"
-             f"Описание:\n"
-             f"{place_info.description}",
-        reply_markup=await create_inline_keyboard(
-            [("Назад", "back")]
+        await callback.message.answer(
+            text=f"{place_info.title}\n"
+                 f"Описание:\n"
+                 f"{place_info.description}",
+            reply_markup=await create_inline_keyboard(
+                [("Назад", "back")]
+            )
         )
-    )
+    except Exception as e:
+        logger.error(f"Не удалось просмотреть места: {e}")
 
 
 @router.callback_query(F.data.startswith("regions:reg:"))
@@ -45,6 +49,7 @@ async def get_regions(
         place_service: PlaceService,
 ):
     try:
+        await callback.answer()
         user_id = callback.from_user.id
         user_pagination = await state.get_value("user_pagination", None)
 
@@ -66,7 +71,7 @@ async def get_regions(
         await state.update_data(user_pagination=user_pagination)
 
         await callback.message.answer(
-            text=f"{region_info.name}\n\n"
+            text=f"{region_info.name} район\n\n"
                  f"Описание:\n"
                  f"{region_info.description}\n\n"
                  f"Места:",
