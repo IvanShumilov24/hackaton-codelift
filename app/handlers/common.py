@@ -52,7 +52,7 @@ async def start_handler(
         await state.update_data(user_pagination=user_pagination)
 
         await message.answer(
-            "Список регионов:",
+            "Выберите интересующий вас регион:",
             reply_markup=keyboard
         )
 
