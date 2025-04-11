@@ -64,7 +64,9 @@ async def get_regions(
 
         region_places = await place_service.get_all_by_region_id(region_id)
 
-        pagination = Pagination(region_places)
+        places_data = [{"title": r.title, "place_id": r.place_id} for r in region_places]
+
+        pagination = Pagination(places_data)
         user_pagination[callback.from_user.id] = pagination
 
         keyboard = await pagination.get_page_keyboard(prefix="places")
