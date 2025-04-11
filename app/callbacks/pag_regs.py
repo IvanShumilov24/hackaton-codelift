@@ -25,6 +25,7 @@ async def get_regions(
         place_service: PlaceService,
 ):
     try:
+        await callback.message.delete()
         await callback.answer()
         place_id = callback.data.split(":")[-1]
 
@@ -36,7 +37,8 @@ async def get_regions(
                  f"{place_info.description}",
             reply_markup=await create_inline_keyboard(
                 [("Назад", "back")]
-            )
+            ),
+            parse_mode="Markdown"
         )
     except Exception as e:
         logger.error(f"Не удалось просмотреть места: {e}")
