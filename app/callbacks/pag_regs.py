@@ -15,6 +15,7 @@ router = Router()
 @router.callback_query(F.data == "back")
 async def go_to_back(callback: CallbackQuery):
     await callback.message.delete()
+    await callback.message.delete()
 
 
 @router.callback_query(F.data.startswith("places:reg:"))
@@ -30,8 +31,8 @@ async def get_regions(
         place_info = await place_service.get_one_place(place_id)
 
         await callback.message.answer(
-            text=f"{place_info.title}\n"
-                 f"Описание:\n"
+            text=f"**{place_info.title}**\n\n"
+                 f"**Описание:**\n"
                  f"{place_info.description}",
             reply_markup=await create_inline_keyboard(
                 [("Назад", "back")]
@@ -74,10 +75,10 @@ async def get_regions(
         await state.update_data(user_pagination=user_pagination)
 
         await callback.message.answer(
-            text=f"{region_info.name} район\n\n"
-                 f"Описание:\n"
-                 f"{region_info.description}\n\n"
-                 f"Места:",
+            text=f"📍 *{region_info.name} район* \n\n"
+                 f"📜 *Описание:* \n"
+                 f"{region_info.description}\n",
+            parse_mode="Markdown",
             reply_markup=keyboard
         )
     except Exception as e:
