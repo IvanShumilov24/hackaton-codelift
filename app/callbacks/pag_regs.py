@@ -1,6 +1,6 @@
-from aiogram import F, Router, Bot, Dispatcher
-from aiogram.types import Message, CallbackQuery
+from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery
 
 from app.database.models.region import Region
 from app.services.region_service import RegionService

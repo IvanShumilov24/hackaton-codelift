@@ -1,5 +1,3 @@
-
-
 from app.database.dao.user_dao import UserDAO
 from app.database.models.user import User
 from app.utils.logger import logger

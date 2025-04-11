@@ -21,11 +21,11 @@ class PlaceDAO:
             await self.session.rollback()
             raise
 
-    async def get_all(self, offset: int = 10) -> Place | None:
+    async def get_all(self, offset: int = 0, limit: int = 10) -> list[Place] | None:
         try:
-            query = select(Place).offset().order_by(Place.title)
+            query = select(Place).offset(offset).limit(limit).order_by(Place.title)
             result = await self.session.execute(query)
-            return result.scalar_one_or_none()
+            return result.scalars().all()
         except SQLAlchemyError as e:
             logger.error(f"Ошибка при получении всех мест: {e}")
             await self.session.rollback()

@@ -1,8 +1,7 @@
 from typing import Optional
 
-from pydantic.v1 import UUID4
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import declarative_base, mapped_column, Mapped
+from sqlalchemy import Integer, String
+from sqlalchemy.orm import mapped_column, Mapped
 
 from app.database.models.base import Base
 

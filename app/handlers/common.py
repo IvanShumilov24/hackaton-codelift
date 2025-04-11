@@ -47,7 +47,7 @@ async def start_handler(
             user_id=message.from_user.id,
             first_name=message.from_user.first_name,
         )
-        await message.answer(f"Привет, {message.from_user.first_name}! Приветствуем тебя в нашем путеводителе по ЛО")
+        await message.answer(f"Привет {message.from_user.first_name}! Приветствуем тебя в нашем путеводителе по ЛО")
 
         pagination = Pagination(region_list)
         user_pagination[message.from_user.id] = pagination
