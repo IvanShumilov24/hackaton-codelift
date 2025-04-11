@@ -23,13 +23,6 @@ async def go_to_back(
 ):
     await callback.message.delete()
 
-    await start_handler(
-        message=callback.message,
-        user_service=user_service,
-        state=state,
-        region_service=region_service
-    )
-
 
 @router.callback_query(F.data.startswith("places:reg:"))
 async def get_regions(
@@ -45,8 +38,8 @@ async def get_regions(
         place_info = await place_service.get_one_place(place_id)
 
         await callback.message.answer(
-            text=f"*{place_info.title}*\n\n"
-                 f"*Описание:*\n"
+            text=f"📍 *{place_info.title}*\n\n"
+                 f"📜 *Описание:*\n"
                  f"{place_info.description}",
             reply_markup=await create_inline_keyboard(
                 [("Назад", "back")]
