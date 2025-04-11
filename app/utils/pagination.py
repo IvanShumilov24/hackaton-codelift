@@ -18,10 +18,9 @@ class Pagination:
         builder = InlineKeyboardBuilder()
 
         for item in self.get_current_page_data():
-            name = item['name']
             builder.row(InlineKeyboardButton(
-                text=name,
-                callback_data=f"{prefix}:reg:{name}"
+                text=item.get("name"),
+                callback_data=f"{prefix}:reg:{item.get("region_id")}"
             ))
 
         pagination_buttons = []
