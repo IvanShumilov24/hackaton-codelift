@@ -3,6 +3,8 @@ from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
+from app.database.models.region import Region
+from app.services.region_service import RegionService
 from app.services.user_service import UserService
 from app.utils.logger import logger
 from app.utils.pagination import Pagination
@@ -33,10 +35,13 @@ lst = [{"region_id": 1, "name": "Волосовский"},
 async def start_handler(
         message: Message,
         user_service: UserService,
-        state: FSMContext
+        state: FSMContext,
+        region_service: RegionService,
 ):
     try:
         user_pagination = {}
+
+        region_list: list[Region] = await region_service.get_all_regions()
 
         await user_service.register_user(
             user_id=message.from_user.id,
@@ -44,7 +49,7 @@ async def start_handler(
         )
         await message.answer(f"Привет {message.from_user.first_name}! Приветствуем тебя в нашем путеводителе по ЛО")
 
-        pagination = Pagination(lst)
+        pagination = Pagination(region_list)
         user_pagination[message.from_user.id] = pagination
 
         keyboard = await pagination.get_page_keyboard(prefix="regions")
