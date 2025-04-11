@@ -1,5 +1,5 @@
+from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
-from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup, InlineKeyboardButton
 
 
 async def create_inline_keyboard(buttons: list[tuple[str, str]]) -> InlineKeyboardMarkup:

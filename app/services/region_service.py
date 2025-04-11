@@ -1,5 +1,3 @@
-
-
 from app.database.dao.region_dao import RegionDAO
 from app.database.models.region import Region
 from app.utils.logger import logger
@@ -8,7 +6,6 @@ from app.utils.logger import logger
 class RegionService:
     def __init__(self, region_dao: RegionDAO):
         self.region_dao = region_dao
-
 
     async def get_all_regions(self) -> list[Region]:
         try:
