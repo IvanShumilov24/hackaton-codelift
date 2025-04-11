@@ -25,7 +25,7 @@ async def get_regions(
 ):
     try:
         await callback.answer()
-        place_id = int(callback.data.split(":")[-1])
+        place_id = callback.data.split(":")[-1]
 
         place_info = await place_service.get_one_place(place_id)
 
