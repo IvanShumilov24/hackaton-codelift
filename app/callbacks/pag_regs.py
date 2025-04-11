@@ -10,7 +10,7 @@ router = Router()
 @router.callback_query(F.data.startswith("regions:reg:"))
 async def get_regions(callback: CallbackQuery):
     region_id = int(callback.data.split(":")[-1])
-    await callback.answer(f"Выбран регон {region_id}")
+    await callback.answer(f"Выбран регион {region_id}")
 
 
 @router.callback_query(F.data.startswith("regions:"))

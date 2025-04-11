@@ -18,7 +18,7 @@ async def main():
     logging.basicConfig(level=logging.INFO)
 
     config = Settings()
-    bot, dp = create_bot(config)
+    bot, dp = await create_bot(config)
     database = Database(config.DB_URL)
 
     @dp.error()
