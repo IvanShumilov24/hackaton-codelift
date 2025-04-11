@@ -1,9 +1,13 @@
-from aiogram.types import InlineKeyboardButton
+from typing import Union
+
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+
+from app.database.models.region import Region
 
 
 class Pagination:
-    def __init__(self, data: list, page_size: int = 5):
+    def __init__(self, data: Union[list, list[Region]], page_size: int = 5):
         self.data = data
         self.page_size = page_size
         self.current_page = 1
