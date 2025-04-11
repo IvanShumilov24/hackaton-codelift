@@ -2,9 +2,11 @@ import logging
 
 from aiogram.types import ErrorEvent
 
+from app.database.dao.region_dao import RegionDAO
 from app.database.dao.user_dao import UserDAO
 from app.handlers import common
 from app.callbacks import pag_regs
+from app.services.region_service import RegionService
 from app.utils.logger import logger
 from config.config import Settings
 from app.bot import create_bot
@@ -35,6 +37,9 @@ async def main():
     async def di_middleware(handler, event, data):
         async with database.session_maker() as session:
             data["user_service"] = UserService(UserDAO(session))
+            data["user_dao"] = UserDAO(session)
+            data["region_service"] = RegionService(RegionDAO(session))
+            data["region_dao"] = RegionDAO(session)
             try:
                 return await handler(event, data)
             except Exception as e:
