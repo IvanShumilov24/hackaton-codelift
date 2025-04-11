@@ -24,7 +24,7 @@ class RegionDAO:
         try:
             query = select(Region).offset(offset).limit(limit).order_by(Region.name)
             result = await self.session.execute(query)
-            return result.scalar_one_or_none()
+            return result.scalars().all()
         except SQLAlchemyError as e:
             logger.error(f"Ошибка при получении всех регионов: {e}")
             await self.session.rollback()

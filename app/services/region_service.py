@@ -13,7 +13,7 @@ class RegionService:
     async def get_all_regions(self) -> list[Region]:
         try:
             regions = await self.region_dao.get_all()
-            logger.success(f"Найдено {len(regions)} регионов")
+            logger.info(f"Найдено {len(regions)} регионов")
             return regions
         except Exception as e:
             logger.error(f"Ошибка получения всех регионов: {e}")
