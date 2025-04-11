@@ -49,6 +49,7 @@ async def get_regions(
         place_service: PlaceService,
 ):
     try:
+        await callback.message.delete()
         await callback.answer()
         user_id = callback.from_user.id
         user_pagination = await state.get_value("user_pagination", None)

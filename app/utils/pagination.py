@@ -30,8 +30,8 @@ class Pagination:
                 ))
             else:
                 builder.row(InlineKeyboardButton(
-                    text=item.get("title"),
-                    callback_data=f"{prefix}:reg:{item.get('place_id')}"
+                    text=item.title,
+                    callback_data=f"{prefix}:reg:{item.place_id}"
                 ))
 
         pagination_buttons = []
