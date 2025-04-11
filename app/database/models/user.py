@@ -10,7 +10,5 @@ from app.database.models.base import Base
 class User(Base):
     __tablename__ = 'users'
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    username: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
-    first_name: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    last_name: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    user_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    first_name: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)

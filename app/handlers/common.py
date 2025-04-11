@@ -15,10 +15,8 @@ async def start_handler(
 ):
     try:
         user = await user_service.register_user(
-            id=message.from_user.id,
-            username=message.from_user.username,
+            user_id=message.from_user.id,
             first_name=message.from_user.first_name,
-            last_name=message.from_user.last_name
         )
         await message.answer(
             f"ТАК НАХУЙ, {user.first_name} ДОБРО ПОЖАЛОВАТЬ В НАШУ КАЧАЛКУ"
