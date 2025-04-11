@@ -7,6 +7,12 @@ from app.utils.logger import logger
 router = Router()
 
 
+@router.callback_query(F.data.startswith("regions:reg:"))
+async def get_regions(callback: CallbackQuery):
+    region_id = int(callback.data.split(":")[-1])
+    await callback.answer(f"Выбран регон {region_id}")
+
+
 @router.callback_query(F.data.startswith("regions:"))
 async def handle_pagination(callback: CallbackQuery, state: FSMContext):
     try:
@@ -27,10 +33,4 @@ async def handle_pagination(callback: CallbackQuery, state: FSMContext):
         await callback.answer()
     except Exception as e:
         logger.error(f"Не получилось переключиться: {e}")
-        await callback.message.answer("Ошибка при пагинации. Попробуйте позже.")
-
-
-@router.callback_query(F.data.startswith("regions:reg:"))
-async def get_regions(callback: CallbackQuery):
-    region_id = int(callback.data.split(":")[-1])
-    await callback.answer(f"Выбран регон {region_id}")
+        await callback.message.answer("Ошибка при пагинации. Попробуйте нажать /start.")
