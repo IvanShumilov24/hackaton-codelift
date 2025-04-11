@@ -2,10 +2,12 @@ import logging
 
 from aiogram.types import ErrorEvent
 
+from app.database.dao.place_dao import PlaceDAO
 from app.database.dao.region_dao import RegionDAO
 from app.database.dao.user_dao import UserDAO
 from app.handlers import common
 from app.callbacks import pag_regs
+from app.services.place_service import PlaceService
 from app.services.region_service import RegionService
 from app.utils.logger import logger
 from config.config import Settings
@@ -40,6 +42,8 @@ async def main():
             data["user_dao"] = UserDAO(session)
             data["region_service"] = RegionService(RegionDAO(session))
             data["region_dao"] = RegionDAO(session)
+            data["place_service"] = PlaceService(PlaceDAO(session))
+            data["place_dao"] = PlaceDAO(session)
             try:
                 return await handler(event, data)
             except Exception as e:
