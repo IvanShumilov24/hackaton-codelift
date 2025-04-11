@@ -1,3 +1,5 @@
+from pydantic import UUID4
+
 from app.database.dao.place_dao import PlaceDAO
 from app.database.models.place import Place
 from app.utils.logger import logger
@@ -17,7 +19,7 @@ class PlaceService:
             logger.error(f"Ошибка при получении мест региона: {e}")
             raise
 
-    async def get_one_place(self, place_id: int) -> Place:
+    async def get_one_place(self, place_id: UUID4) -> Place:
         try:
             place = await self.place_dao.get_one_or_none(place_id)
             if not place:

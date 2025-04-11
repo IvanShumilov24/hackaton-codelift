@@ -1,3 +1,4 @@
+from pydantic.v1 import UUID4
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,7 +11,7 @@ class PlaceDAO:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def get_one_or_none(self, place_id: int) -> Place | None:
+    async def get_one_or_none(self, place_id: UUID4) -> Place | None:
         try:
             query = select(Place).where(Place.place_id == place_id)
             result = await self.session.execute(query)
