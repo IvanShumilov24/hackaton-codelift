@@ -22,7 +22,7 @@ class PlaceService:
         try:
             place = await place_dao.get_one_or_none(place_id)
             if not place:
-                raise ValueError("Регион не найден")
+                raise ValueError("Место не найдено")
             return place
         except Exception as e:
             logger.error(f"Ошибка получения места {place_id}: {e}")
