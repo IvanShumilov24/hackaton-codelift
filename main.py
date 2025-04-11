@@ -7,6 +7,7 @@ from app.database.dao.region_dao import RegionDAO
 from app.database.dao.user_dao import UserDAO
 from app.handlers import common
 from app.callbacks import pag_regs
+from app.handlers import commands
 from app.services.place_service import PlaceService
 from app.services.region_service import RegionService
 from app.utils.logger import logger
@@ -52,6 +53,7 @@ async def main():
 
     dp.include_router(common.router)
     dp.include_router(pag_regs.router)
+    dp.include_router(commands.router)
 
     try:
         logger.info("Запуск бота...")

@@ -3,9 +3,11 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
 from app.database.models.region import Region
+from app.handlers.common import start_handler
 from app.keyboards.builders import create_inline_keyboard
 from app.services.place_service import PlaceService
 from app.services.region_service import RegionService
+from app.services.user_service import UserService
 from app.utils.logger import logger
 from app.utils.pagination import Pagination
 
@@ -13,9 +15,21 @@ router = Router()
 
 
 @router.callback_query(F.data == "back")
-async def go_to_back(callback: CallbackQuery):
+async def go_to_back(
+        callback: CallbackQuery,
+        user_service: UserService,
+        state: FSMContext,
+        region_service: RegionService,
+):
     await callback.message.delete()
     await callback.message.delete()
+
+    await start_handler(
+        message=callback.message,
+        user_service=user_service,
+        state=state,
+        region_service=region_service
+    )
 
 
 @router.callback_query(F.data.startswith("places:reg:"))
