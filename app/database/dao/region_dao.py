@@ -20,7 +20,7 @@ class RegionDAO:
             await self.session.rollback()
             raise
 
-    async def get_all(self, offset: int = 0, limit: int = 10) -> list[Region] | None:
+    async def get_all(self, offset: int = 0, limit: int = 100) -> list[Region] | None:
         try:
             query = select(Region).offset(offset).limit(limit).order_by(Region.name)
             result = await self.session.execute(query)
