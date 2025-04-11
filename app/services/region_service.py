@@ -16,7 +16,7 @@ class RegionService:
             logger.error(f"Ошибка получения всех регионов: {e}")
             raise
 
-    async def get_one_region(self, region_id) -> Region:
+    async def get_one_region(self, region_id: int) -> Region:
         try:
             region = await self.region_dao.get_one_or_none(region_id)
             if not region:
