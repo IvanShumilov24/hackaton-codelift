@@ -12,7 +12,7 @@ class UserDAO:
 
     async def get_user_by_id(self, user_id: int) -> User | None:
         try:
-            query = select(User).where(User.id == user_id)
+            query = select(User).where(User.user_id == user_id)
             result = await self.session.execute(query)
             return result.scalar_one_or_none()
         except SQLAlchemyError as e:
@@ -28,7 +28,7 @@ class UserDAO:
             user = User(**user_data)
             self.session.add(user)
             await self.session.commit()
-            logger.info(f"Создан пользователь: {user.id}")
+            logger.info(f"Создан пользователь: {user.user_id}")
             return user
         except SQLAlchemyError as e:
             logger.error(f"Ошибка при создании пользователя: {e}")
@@ -36,7 +36,7 @@ class UserDAO:
             raise
 
     async def get_or_create_user(self, user_data: dict) -> tuple[User, bool]:
-        user = await self.get_user_by_id(user_data['id'])
+        user = await self.get_user_by_id(user_data['user_id'])
         if user:
             return user, False
         try:

@@ -11,13 +11,13 @@ class UserService:
 
     async def register_user(self, **user_data) -> User:
         try:
-            existing_user = await self.user_dao.get_user_by_id(user_data['id'])
+            existing_user = await self.user_dao.get_user_by_id(user_data['user_id'])
             if existing_user:
-                logger.info(f"Пользователь уже существует: {user_data['id']}")
+                logger.info(f"Пользователь уже существует: {user_data['user_id']}")
                 return existing_user
 
             user = await self.user_dao.create_user(**user_data)
-            logger.success(f"Успешная регистрация: {user.id}")
+            logger.success(f"Успешная регистрация: {user.user_id}")
             return user
         except Exception as e:
             logger.critical(f"Ошибка регистрации пользователя: {e}")
@@ -30,10 +30,8 @@ class UserService:
                 raise ValueError("Пользователь не найден")
 
             return {
-                'id': user.id,
-                'username': user.username,
+                'user_id': user.user_id,
                 'first_name': user.first_name,
-                'last_name': user.last_name,
             }
         except Exception as e:
             logger.error(f"Ошибка получения профиля {user_id}: {e}")
