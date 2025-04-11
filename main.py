@@ -4,6 +4,7 @@ from aiogram.types import ErrorEvent
 
 from app.database.dao.user_dao import UserDAO
 from app.handlers import common
+from app.callbacks import pag_regs
 from app.utils.logger import logger
 from config.config import Settings
 from app.bot import create_bot
@@ -41,6 +42,7 @@ async def main():
                 raise
 
     dp.include_router(common.router)
+    dp.include_router(pag_regs.router)
 
     try:
         logger.info("Запуск бота...")
