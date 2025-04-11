@@ -1,5 +1,6 @@
 from aiogram import Router
 from aiogram.filters import Command, CommandStart
+from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from app.services.user_service import UserService
@@ -7,8 +8,6 @@ from app.utils.logger import logger
 from app.utils.pagination import Pagination
 
 router = Router()
-
-user_pagination = {}
 
 lst = [{"name": "Волосовский"},
        {"name": "Волховский"},
@@ -34,9 +33,12 @@ lst = [{"name": "Волосовский"},
 async def start_handler(
         message: Message,
         user_service: UserService,
+        state: FSMContext
 ):
     try:
-        user = await user_service.register_user(
+        user_pagination = {}
+
+        await user_service.register_user(
             user_id=message.from_user.id,
             first_name=message.from_user.first_name,
         )
@@ -46,6 +48,8 @@ async def start_handler(
         user_pagination[message.from_user.id] = pagination
 
         keyboard = await pagination.get_page_keyboard(prefix="regions")
+
+        await state.update_data(user_pagination=user_pagination)
 
         await message.answer(
             "Список регионов:",
