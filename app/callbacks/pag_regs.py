@@ -22,7 +22,6 @@ async def go_to_back(
         region_service: RegionService,
 ):
     await callback.message.delete()
-    await callback.message.delete()
 
     await start_handler(
         message=callback.message,
@@ -46,8 +45,8 @@ async def get_regions(
         place_info = await place_service.get_one_place(place_id)
 
         await callback.message.answer(
-            text=f"**{place_info.title}**\n\n"
-                 f"**Описание:**\n"
+            text=f"*{place_info.title}*\n\n"
+                 f"*Описание:*\n"
                  f"{place_info.description}",
             reply_markup=await create_inline_keyboard(
                 [("Назад", "back")]
