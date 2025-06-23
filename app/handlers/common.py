@@ -1,7 +1,7 @@
-from aiogram import Router
+from aiogram import Router, F
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
 
 from app.database.models.region import Region
 from app.keyboards.builders import create_inline_keyboard
@@ -17,8 +17,6 @@ router = Router()
 async def start_handler(
         message: Message,
         user_service: UserService,
-        state: FSMContext,
-        region_service: RegionService,
 ):
     try:
         await user_service.register_user(
@@ -34,3 +32,11 @@ async def start_handler(
     except Exception as e:
         logger.error(f"Ошибка при обработке /start: {e}")
         await message.answer("⚠️ Произошла ошибка при регистрации. Попробуйте позже.")
+
+
+@router.callback_query(F.data == "main_menu")
+async def main_menu_handler(
+        callback: CallbackQuery,
+        user_service: UserService,
+):
+    await start_handler(message=callback.message, user_service=user_service)

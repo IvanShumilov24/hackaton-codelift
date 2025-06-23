@@ -5,6 +5,7 @@ from aiogram.types import Message, InlineKeyboardButton
 
 from app.database.models.region import Region
 from app.handlers.common import start_handler
+from app.services.place_service import PlaceService
 from app.services.region_service import RegionService
 from app.services.user_service import UserService
 from app.utils.logger import logger
@@ -17,7 +18,6 @@ router = Router()
 async def get_all_regions_command(
         message: Message,
         region_service: RegionService,
-        user_service: UserService,
         state: FSMContext,
         is_edited: bool = False,
 ):
