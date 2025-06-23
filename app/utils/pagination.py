@@ -1,38 +1,37 @@
-from typing import Union
-
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-
-from app.database.models.place import Place
-from app.database.models.region import Region
+from typing import Callable, Optional
 
 
 class Pagination:
-    def __init__(self, data: Union[list, list[Region], list[Place]], page_size: int = 5):
+    def __init__(
+            self,
+            data: list,
+            page_size: int = 5,
+            item_format: Callable = lambda item: f"Item {getattr(item, 'id', '')}",
+            item_callback: Callable = lambda item, prefix: f"item:{prefix}:{getattr(item, 'id', '')}"
+    ):
         self.data = data
         self.page_size = page_size
         self.current_page = 1
-        self.total_pages = (len(data) + page_size - 1) // page_size
+        self.total_pages = max((len(data) + page_size - 1) // page_size, 1)  # Не меньше 1
+        self.item_format = item_format
+        self.item_callback = item_callback
 
-    def get_current_page_data(self):
+    def get_current_page_data(self) -> list:
         start = (self.current_page - 1) * self.page_size
         end = start + self.page_size
         return self.data[start:end]
 
-    async def get_page_keyboard(self, prefix: str):
+    async def get_page_keyboard(self, prefix: str, additional_buttons: Optional[list[InlineKeyboardButton]] = None) -> InlineKeyboardMarkup:
         builder = InlineKeyboardBuilder()
 
+        # Добавляем кнопки с данными текущей страницы
         for item in self.get_current_page_data():
-            if item.get('region_id'):
-                builder.row(InlineKeyboardButton(
-                    text=item.get("name"),
-                    callback_data=f"{prefix}:reg:{item.get('region_id')}"
-                ))
-            else:
-                builder.row(InlineKeyboardButton(
-                    text=item.get("title"),
-                    callback_data=f"{prefix}:reg:{item.get('place_id')}"
-                ))
+            builder.row(InlineKeyboardButton(
+                text=self.item_format(item),
+                callback_data=self.item_callback(item, prefix)
+            ))
 
         pagination_buttons = []
         if self.current_page > 1:
@@ -54,9 +53,13 @@ class Pagination:
 
         builder.row(*pagination_buttons)
 
+        if additional_buttons:
+            for button in additional_buttons:
+                builder.row(button)
+
         return builder.as_markup()
 
-    async def process_callback(self, callback_data: str):
+    async def process_callback(self, callback_data: str) -> int:
         action = callback_data.split(":")[1]
 
         if action == "prev" and self.current_page > 1:
