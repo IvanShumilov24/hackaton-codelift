@@ -1,3 +1,4 @@
+import uuid
 from typing import Union
 
 from aiogram import F, Router
@@ -12,9 +13,17 @@ from app.utils.functions import _is_valid_uuid
 
 
 async def _get_place_from_state(callback: CallbackQuery, state: FSMContext) -> Union[Place, None]:
-    place_id = callback.data.split(":")[1]
+    try:
+        place_id_str = callback.data.split(":")[1]
+        place_id = uuid.UUID(place_id_str)
+    except (IndexError, ValueError):
+        return None
+
     places = await state.get_value("places")
-    return next((place for place in places if place.product_id == place_id), None)
+    if not places:
+        return None
+
+    return next((place for place in places if place.place_id == place_id), None)
 
 
 router = Router(name="Places pagination router")
@@ -28,12 +37,12 @@ async def get_detail_info_place(
         callback: CallbackQuery,
         state: FSMContext,
 ):
-    place = await _get_place_from_state(callback, state)
-    if not place:
+    place = await _get_place_from_state(callback=callback, state=state)
+    if place is None:
         await callback.answer("Место не найдено!", show_alert=True)
         return
 
-    await callback.message.answer(
+    await callback.message.edit_text(
         text=f"📍 *{place.title}*\n\n"
              f"📜 *Описание:*\n"
              f"{place.description}",

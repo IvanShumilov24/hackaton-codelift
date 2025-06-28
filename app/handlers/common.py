@@ -20,7 +20,7 @@ async def start_handler(
 ):
     try:
         await user_service.register_user(
-            user_id=message.from_user.id,
+            user_id=int(message.from_user.id),
             first_name=message.from_user.first_name,
         )
 
