@@ -1,4 +1,5 @@
 from aiogram import F, Router
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, InlineKeyboardButton
 
@@ -27,7 +28,7 @@ async def handle_regions_list_request(
 
 @router.callback_query(
     F.data.startswith("regions:"),
-    lambda query: query.split(":")[1].isdigit()
+    lambda query: query.data.split(":")[1].isdigit()
 )
 async def get_detail_region(
         callback: CallbackQuery,
@@ -37,9 +38,11 @@ async def get_detail_region(
     region_id = int(callback.data.split(":")[1])
     places: list[Place] = await place_service.get_all_by_region_id(region_id)
 
+    print(places)
+
     places_pagination = Pagination(
         data=places,
-        item_format=lambda place: place.name,
+        item_format=lambda place: place.title,
         item_callback=lambda place, prefix: f"{prefix}:{place.place_id}"
     )
 
@@ -56,3 +59,37 @@ async def get_detail_region(
         text="Вот места:",
         reply_markup=keyboard,
     )
+
+@router.callback_query(
+    F.data.startswith("regions:"),
+    lambda query: query.data.split(":")[1] in ("prev", "next")
+)
+async def handle_regions_pagination(callback: CallbackQuery, state: FSMContext):
+    pagination = await state.get_value("regions_pagination")
+
+    old_page = pagination.current_page
+    new_page = await pagination.process_callback(callback.data)
+
+    if old_page == new_page:
+        await callback.answer()
+        return
+
+    keyboard = await pagination.get_page_keyboard(
+        prefix="regions",
+        additional_buttons=[InlineKeyboardButton(text="Главное меню", callback_data="main_menu")],
+    )
+
+    await state.update_data(regions_pagination=pagination)
+
+    try:
+        await callback.message.edit_text(
+            f"Вот места:",
+            reply_markup=keyboard
+        )
+    except TelegramBadRequest as e:
+        if "message is not modified" in str(e):
+            await callback.answer()
+        else:
+            raise
+
+    await callback.answer()

@@ -27,7 +27,7 @@ async def get_all_regions_command(
     regions_pagination = Pagination(
         data=regions,
         item_format=lambda region: region.name,
-        item_callback=lambda region: f"regions:{region.region_id}",
+        item_callback=lambda region, prefix: f"{prefix}:{region.region_id}",
     )
 
     await state.update_data(regions_pagination=regions_pagination)
