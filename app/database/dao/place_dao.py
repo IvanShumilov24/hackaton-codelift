@@ -19,9 +19,9 @@ class PlaceDAO:
         except SQLAlchemyError as e:
             logger.error(f"Ошибка при получении места {place_id}: {e}")
             await self.session.rollback()
-            raise
+            raise e
 
-    async def get_all(self, offset: int = 0, limit: int = 10) -> list[Place] | None:
+    async def get_all(self, offset: int = 0, limit: int = 100) -> list[Place] | None:
         try:
             query = select(Place).offset(offset).limit(limit).order_by(Place.title)
             result = await self.session.execute(query)
@@ -29,4 +29,4 @@ class PlaceDAO:
         except SQLAlchemyError as e:
             logger.error(f"Ошибка при получении всех мест: {e}")
             await self.session.rollback()
-            raise
+            raise e

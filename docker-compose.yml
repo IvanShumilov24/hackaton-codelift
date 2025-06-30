@@ -5,6 +5,7 @@ services:
     env_file: .env
     volumes:
       - ./logs:/app/logs
+      - .:/app
     depends_on:
       - postgres
 

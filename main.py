@@ -13,7 +13,7 @@ from app.handlers import commands
 from app.services.place_service import PlaceService
 from app.services.region_service import RegionService
 from app.utils.logger import logger
-from config.config import Settings
+from config.config import settings
 from app.bot import create_bot
 from app.database.base import Database
 from app.services.user_service import UserService
@@ -22,9 +22,8 @@ from app.services.user_service import UserService
 async def main():
     logging.basicConfig(level=logging.INFO)
 
-    config = Settings()
-    bot, dp = await create_bot(config)
-    database = Database(config.DB_URL)
+    bot, dp = await create_bot(settings)
+    database = Database(settings.DB_URL)
 
     @dp.error()
     async def error_handler(event: ErrorEvent):
