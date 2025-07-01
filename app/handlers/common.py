@@ -5,8 +5,9 @@ from aiogram.types import Message, CallbackQuery
 from app.keyboards.builders import create_inline_keyboard
 from app.services.user_service import UserService
 from app.utils.logger import logger
+from app.utils.statekeys import StateKeys
 
-router = Router()
+router = Router(name="Start router")
 
 
 async def handle_user_start(
@@ -42,7 +43,7 @@ async def start_handler(message: Message, user_service: UserService):
     )
 
 
-@router.callback_query(F.data == "main_menu")
+@router.callback_query(F.data == StateKeys.MAIN_MENU)
 async def main_menu_handler(callback: CallbackQuery, user_service: UserService):
     await handle_user_start(
         message=callback.message,
