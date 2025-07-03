@@ -1,42 +1,55 @@
 from aiogram import Router, F
 from aiogram.filters import CommandStart
-from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from app.database.models.region import Region
 from app.keyboards.builders import create_inline_keyboard
-from app.services.region_service import RegionService
 from app.services.user_service import UserService
 from app.utils.logger import logger
-from app.utils.pagination import Pagination
+from app.utils.statekeys import StateKeys
 
-router = Router()
+router = Router(name="Start router")
 
 
-@router.message(CommandStart())
-async def start_handler(
+async def handle_user_start(
         message: Message,
         user_service: UserService,
+        user_id: int,
+        first_name: str,
+        is_edited: bool = False,
 ):
     try:
-        await user_service.register_user(
-            user_id=int(message.from_user.id),
-            first_name=message.from_user.first_name,
-        )
+        await user_service.register_user(user_id=user_id, first_name=first_name)
 
-        await message.answer(
-            text=f"Привет {message.from_user.first_name}! Приветствуем тебя в нашем путеводителе по ЛО",
-            reply_markup=await create_inline_keyboard([("Перейти к списку", "regions")])
-        )
+        text = "Приветствуем тебя в нашем путеводителе по ЛО"
+        keyboard = await create_inline_keyboard([("Перейти к списку", "regions")])
+
+        if is_edited:
+            await message.edit_text(text=text, reply_markup=keyboard)
+        else:
+            await message.answer(text=text, reply_markup=keyboard)
 
     except Exception as e:
         logger.error(f"Ошибка при обработке /start: {e}")
         await message.answer("⚠️ Произошла ошибка при регистрации. Попробуйте позже.")
 
 
-@router.callback_query(F.data == "main_menu")
-async def main_menu_handler(
-        callback: CallbackQuery,
-        user_service: UserService,
-):
-    await start_handler(message=callback.message, user_service=user_service)
+@router.message(CommandStart())
+async def start_handler(message: Message, user_service: UserService):
+    await handle_user_start(
+        message=message,
+        user_service=user_service,
+        user_id=message.from_user.id,
+        first_name=message.from_user.first_name
+    )
+
+
+@router.callback_query(F.data == StateKeys.MAIN_MENU)
+async def main_menu_handler(callback: CallbackQuery, user_service: UserService):
+    await handle_user_start(
+        message=callback.message,
+        user_service=user_service,
+        user_id=callback.from_user.id,
+        first_name=callback.from_user.first_name,
+        is_edited=True
+    )
+
